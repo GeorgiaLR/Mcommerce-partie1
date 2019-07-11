@@ -57,7 +57,7 @@ public class ProductController {
         return produit;
     }
 
-    // Calculer la marge des produits
+    // Partie 1 : Calculer la marge des produits
     @ApiOperation(value = "Calcule la marge des produits")
     @GetMapping(value = "/AdminProduits")
     public List<String> calculerMargeProduit() {
@@ -81,6 +81,18 @@ public class ProductController {
 
     }
 
+    // Partie 2 : Trier par ordre alphabétique
+    @ApiOperation(value = "Trie les produits par nom par ordre alphabétique")
+    @GetMapping(value = "/Produits/Asc")
+    public List<Product> trierProduitsParOrdreAlphabetique() {
+
+        List<Product> produits = productDao.findByOrderByNomAsc();
+
+        if(produits==null) throw new ProduitIntrouvableException("Aucun produit trouvé");
+
+        return produits;
+
+    }
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
