@@ -16,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,11 +27,8 @@ public class ProductController {
     @Autowired
     private ProductDao productDao;
 
-
     //Récupérer la liste des produits
-
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
-
     public MappingJacksonValue listeProduits() {
 
         Iterable<Product> produits = productDao.findAll();
@@ -50,7 +48,6 @@ public class ProductController {
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
-
     public Product afficherUnProduit(@PathVariable int id) {
 
         Product produit = productDao.findById(id);
@@ -60,12 +57,33 @@ public class ProductController {
         return produit;
     }
 
+    // Calculer la marge des produits
+    @ApiOperation(value = "Calcule la marge des produits")
+    @GetMapping(value = "/AdminProduits")
+    public List<String> calculerMargeProduit() {
 
+        Iterable<Product> produits = productDao.findAll();
+
+        if(produits==null) throw new ProduitIntrouvableException("Aucun produit trouvé");
+
+        String pr;
+        List<String> list = new ArrayList<>();
+
+        for (Product produit: produits) {
+            int prixAchat = produit.getPrixAchat();
+            int prixVente = produit.getPrix();
+            int marge = prixVente - prixAchat;
+            pr = produit.toString() + " -> la marge de ce produit est : " + marge;
+            list.add(pr);
+        }
+
+        return list;
+
+    }
 
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
-
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
         Product productAdded =  productDao.save(product);
