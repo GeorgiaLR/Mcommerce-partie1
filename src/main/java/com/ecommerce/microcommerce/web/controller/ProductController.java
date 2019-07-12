@@ -29,6 +29,7 @@ public class ProductController {
     private ProductDao productDao;
 
     //Récupérer la liste des produits
+    @ApiOperation(value = "Récupère la liste des produits")
     @RequestMapping(value = "/Produits", method = RequestMethod.GET)
     public MappingJacksonValue listeProduits() {
 
@@ -83,7 +84,7 @@ public class ProductController {
     }
 
     // Partie 2 : Trier par ordre alphabétique
-    @ApiOperation(value = "Trie les produits par nom par ordre alphabétique")
+    @ApiOperation(value = "Trie les produits par nom et par ordre alphabétique")
     @GetMapping(value = "/Produits/Asc")
     public List<Product> trierProduitsParOrdreAlphabetique() {
 
@@ -96,6 +97,7 @@ public class ProductController {
     }
 
     // Partie 3 : ajouter un produit et valider le prix de vente
+    @ApiOperation(value = "Ajoute un produit dans le stock")
     @PostMapping(value = "/Produits")
     public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
 
@@ -115,12 +117,14 @@ public class ProductController {
         return ResponseEntity.created(location).build();
     }
 
+    @ApiOperation(value = "Supprime un produit en fonction de son id")
     @DeleteMapping (value = "/Produits/{id}")
     public void supprimerProduit(@PathVariable int id) {
 
         productDao.delete(id);
     }
 
+    @ApiOperation(value = "Met à jour un produit")
     @PutMapping (value = "/Produits")
     public void updateProduit(@RequestBody Product product) {
 
